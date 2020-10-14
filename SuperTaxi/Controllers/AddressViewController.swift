@@ -18,6 +18,7 @@ class AddressViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         tableViewAddress.delegate = self
         tableViewAddress.dataSource = self
+        tableViewAddress.separatorColor = .white
     }
     
     override func viewDidAppear(_ animated: Bool) {

@@ -19,7 +19,7 @@ class AddressService {
     
     func getAddress() -> [Address] {
         if let addresses = UserDefaults.standard.array(forKey: addressesKey) as? [Dictionary<String, String>] {
-            return self.toList(dictionaries: addresses)
+            return self.toList(dictionaries: addresses).reversed()
         }
         
         return []
