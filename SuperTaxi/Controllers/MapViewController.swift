@@ -15,12 +15,41 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     @IBOutlet weak var goToAddressView: UIView!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
+    fileprivate let locationManager = CLLocationManager()
+    var currentCoordinate: CLLocationCoordinate2D?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        self.setupLocationManager()
+    }
+    
+    func setupLocationManager() {
+        locationManager.delegate = self
+        
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.distanceFilter = kCLDistanceFilterNone
+        locationManager.startUpdatingLocation()
+        
+        mapView.showsUserLocation = true
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let latestLocation = locations.first else {return}
+        
+        if currentCoordinate == nil {
+            let zoomRegion = MKCoordinateRegion(center: latestLocation.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+            mapView.setRegion(zoomRegion, animated: true)
+        }
+        
+        currentCoordinate = latestLocation.coordinate
+        
+        manager.stopUpdatingLocation()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -58,4 +87,5 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             }
         }
     }
+    
 }
