@@ -12,9 +12,15 @@ import CoreLocation
 class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var locationTextField: UITextField!
+    @IBOutlet weak var goToAddressView: UIView!
+    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -29,5 +35,27 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     @IBAction func goTo(_ sender: Any) {
         
+    }
+    
+    @objc func onKeyboardShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            if let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double {
+                
+                UIView.animate(withDuration: duration) {
+                    self.bottomConstraint.constant = keyboardSize.height
+                    self.view.layoutIfNeeded()
+                }
+            }
+        }
+    }
+    
+    @objc func onKeyboardHide(notification: NSNotification) {
+        if let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double {
+            
+            UIView.animate(withDuration: duration) {
+                self.bottomConstraint.constant = 0
+                self.view.layoutIfNeeded()
+            }
+        }
     }
 }
