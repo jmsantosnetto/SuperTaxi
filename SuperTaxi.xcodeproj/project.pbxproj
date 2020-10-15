@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		82517C972537DF8B00401BD9 /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82517C962537DF8B00401BD9 /* UIViewControllerExtension.swift */; };
 		82F7B53225366E74007825C3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F7B53125366E74007825C3 /* AppDelegate.swift */; };
 		82F7B53425366E74007825C3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F7B53325366E74007825C3 /* SceneDelegate.swift */; };
 		82F7B53925366E74007825C3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 82F7B53725366E74007825C3 /* Main.storyboard */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		82517C962537DF8B00401BD9 /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
 		82F7B52E25366E74007825C3 /* SuperTaxi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SuperTaxi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		82F7B53125366E74007825C3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		82F7B53325366E74007825C3 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -45,6 +47,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		82517C952537DF6F00401BD9 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				82517C962537DF8B00401BD9 /* UIViewControllerExtension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		82F7B52525366E74007825C3 = {
 			isa = PBXGroup;
 			children = (
@@ -64,6 +74,7 @@
 		82F7B53025366E74007825C3 /* SuperTaxi */ = {
 			isa = PBXGroup;
 			children = (
+				82517C952537DF6F00401BD9 /* Extensions */,
 				82F7B55A25369113007825C3 /* Services */,
 				82F7B55625368C3F007825C3 /* Entities */,
 				82F7B54B25367596007825C3 /* Layout */,
@@ -185,6 +196,7 @@
 				82F7B55425368A72007825C3 /* AddressCell.swift in Sources */,
 				82F7B53425366E74007825C3 /* SceneDelegate.swift in Sources */,
 				82F7B54825366F5F007825C3 /* MapViewController.swift in Sources */,
+				82517C972537DF8B00401BD9 /* UIViewControllerExtension.swift in Sources */,
 				82F7B55125368651007825C3 /* AddressViewController.swift in Sources */,
 				82F7B55C25369132007825C3 /* AddressService.swift in Sources */,
 				82F7B55825368C6F007825C3 /* Adress.swift in Sources */,

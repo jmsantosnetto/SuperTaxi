@@ -19,6 +19,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     fileprivate let locationManager = CLLocationManager()
     var currentCoordinate: CLLocationCoordinate2D?
+    var keyboardHeigh: CGFloat?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -96,17 +97,23 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     @IBAction func goTo(_ sender: Any) {
-        if let address = locationTextField.text {
+        if  let address = locationTextField.text  {
+            
+            if address.isEmpty {
+                self.displayUserError(message: "Informe o endereço!")
+                return
+            }
             
             UIView.animate(withDuration: 0.5) {
                 self.titleLabel.font = .systemFont(ofSize: 17)
                 self.titleLabel.text = "Rota para: \(address.capitalized)"
                 self.view.layoutIfNeeded()
             }
+            
             self.getLocationFromString(address: address) { (location, error) in
                 
                 if let error = error {
-                    self.displayUserError(message: "Informe a localização!")
+                    self.displayUserError(message: "Endereço não pode ser encontrada!")
                     print(error)
                     return
                 }
@@ -115,15 +122,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 self.pinLocationOnMap(location: location, address: address)
                 self.traceRoute(destinateLocation: location)
                 self.addToLastAddressUsed(address: address)
-                return
             }
-            
-            self.displayUserError(message: "Informe o endereço!")
         }
     }
     
     func displayUserError(message: String) {
-        
+        self.showToast(message: message, offSetY: keyboardHeigh ?? 0)
     }
     
     func addToLastAddressUsed(address: String) {
@@ -240,6 +244,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             if let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double {
                 
+                self.keyboardHeigh = keyboardSize.height
+                
                 UIView.animate(withDuration: duration) {
                     self.bottomConstraint.constant = keyboardSize.height
                     self.view.layoutIfNeeded()
@@ -250,6 +256,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     @objc func onKeyboardHide(notification: NSNotification) {
         if let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double {
+            self.keyboardHeigh = 0
             
             UIView.animate(withDuration: duration) {
                 self.bottomConstraint.constant = 0
