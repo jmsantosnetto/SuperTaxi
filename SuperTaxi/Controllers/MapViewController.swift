@@ -34,6 +34,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     func setupLocationManager() {
         locationManager.delegate = self
+        mapView.delegate = self
         
         locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -82,7 +83,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let polylineOverlay = overlay as! MKPolyline
-        
+
         let render = MKPolylineRenderer(polyline: polylineOverlay)
         render.strokeColor = .blue
         return render
@@ -97,11 +98,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     @IBAction func goTo(_ sender: Any) {
         if let address = locationTextField.text {
             
-            self.routeStepsLabel.text = "Calculando rota..."
-            
-            UIView.animate(withDuration: 0.3) {
+            UIView.animate(withDuration: 0.5) {
                 self.titleLabel.font = .systemFont(ofSize: 17)
                 self.titleLabel.text = "Rota para: \(address.capitalized)"
+                self.view.layoutIfNeeded()
             }
             self.getLocationFromString(address: address) { (location, error) in
                 
@@ -111,8 +111,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                     return
                 }
                 
+                self.removePreviousLocations()
                 self.pinLocationOnMap(location: location, address: address)
-                self.removePreviousLocation()
                 self.traceRoute(destinateLocation: location)
                 self.addToLastAddressUsed(address: address)
                 return
@@ -143,24 +143,36 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         let sourcePlacemark = MKPlacemark(coordinate: sourceLocation)
         let destinationPlacemark = MKPlacemark(coordinate: destinateLocation)
         
-        let sourceItem = MKMapItem(placemark: sourcePlacemark)
-        let destinationItem = MKMapItem(placemark: destinationPlacemark)
-        
         let routeRequest = MKDirections.Request()
-        routeRequest.source = sourceItem
-        routeRequest.destination = destinationItem
+        
+        routeRequest.source = MKMapItem(placemark: sourcePlacemark)
+        routeRequest.destination = MKMapItem(placemark: destinationPlacemark)
         routeRequest.transportType = .automobile
         
         let directions = MKDirections(request: routeRequest)
+        
         directions.calculate { (response, error) in
-            if let err = error {
-                print(err.localizedDescription)
+            
+            if let error = error {
+                self.displayUserError(message: "Não foi possivel traçar a rota!")
+                print(error.localizedDescription)
                 return
             }
+            
             guard let response = response, let route = response.routes.first else {return}
             
             self.mapView.addOverlay(route.polyline)
-            self.mapView.setVisibleMapRect(route.polyline.boundingMapRect, edgePadding: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16), animated: true)
+            
+            self.mapView.setVisibleMapRect(
+                route.polyline.boundingMapRect,
+                    edgePadding: UIEdgeInsets(
+                        top: 16,
+                        left: 16,
+                        bottom: 16,
+                        right: 16
+                    ),
+                animated: true
+            )
             
             self.getRouteSteps(route: route)
         }
@@ -187,8 +199,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             let initialMessage = "Em \(String(Int(steps[0].distance)) ) metros \(steps[0].instructions)"
             routeStepsLabel.text = initialMessage
 
-            UIView.animate(withDuration: 0.3) {
+            UIView.animate(withDuration: 0.5) {
                 self.routeStepsLabel.alpha = 1
+                self.view.layoutIfNeeded()
             }
         }
         
@@ -208,16 +221,18 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         self.mapView.setRegion(zoomRegion, animated: true)
     }
     
-    func removePreviousLocation() {
+    func removePreviousLocations() {
         self.mapView.removeOverlays(self.mapView.overlays)
+        self.mapView.removeAnnotations(self.mapView.annotations)
     }
     
     @objc func onTouchTextField() {
-        UIView.animate(withDuration: 0.3) {
+        UIView.animate(withDuration: 0.5) {
             self.titleLabel.font = .systemFont(ofSize: 20)
             self.titleLabel.text = "Para onde vamos?"
             self.routeStepsLabel.text = ""
             self.routeStepsLabel.alpha = 0
+            self.view.layoutIfNeeded()
         }
     }
     
