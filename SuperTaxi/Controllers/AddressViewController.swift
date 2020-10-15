@@ -16,9 +16,7 @@ class AddressViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableViewAddress.delegate = self
-        tableViewAddress.dataSource = self
-        tableViewAddress.separatorColor = .white
+        self.setUpTableView()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -28,6 +26,13 @@ class AddressViewController: UIViewController, UITableViewDelegate, UITableViewD
     func getAddresses () {
         addresses = AddressService.instance.getAddress()
         tableViewAddress.reloadData()
+    }
+    
+    func setUpTableView() {
+        tableViewAddress.delegate = self
+        tableViewAddress.dataSource = self
+        tableViewAddress.separatorColor = .white
+        tableViewAddress.tableFooterView = UIView()
     }
     
     
