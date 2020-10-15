@@ -11,3 +11,6 @@ App focused on using the map and location features
     CLLocationManagerDelegate
     MKMapViewDelegate
     MKMapView
+    
+![](super-taxi-1.gif)       
+![](super-taxi-2.gif)
