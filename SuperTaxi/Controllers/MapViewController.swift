@@ -110,7 +110,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 self.view.layoutIfNeeded()
             }
             
-            self.getLocationFromString(address: address) { (location, error) in
+            self.getLocationFromString(address: address.capitalized) { (location, error) in
                 
                 if let error = error {
                     self.displayUserError(message: "Endereço não pode ser encontrada!")
@@ -119,9 +119,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 }
                 
                 self.removePreviousLocations()
-                self.pinLocationOnMap(location: location, address: address)
+                self.pinLocationOnMap(location: location, address: address.capitalized)
                 self.traceRoute(destinateLocation: location)
-                self.addToLastAddressUsed(address: address)
+                self.addToLastAddressUsed(address: address.capitalized)
             }
         }
     }
@@ -216,7 +216,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         let annotation = MKPointAnnotation()
         annotation.coordinate = finalLocation
-        annotation.title = "\(address)"
+        annotation.title = "\(address.capitalized)"
         
         self.mapView.addAnnotation(annotation)
         self.view.endEditing(true)
@@ -232,7 +232,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     @objc func onTouchTextField() {
         UIView.animate(withDuration: 0.5) {
-            self.titleLabel.font = .systemFont(ofSize: 20)
+            self.titleLabel.font = .boldSystemFont(ofSize: 20)
             self.titleLabel.text = "Para onde vamos?"
             self.routeStepsLabel.text = ""
             self.routeStepsLabel.alpha = 0

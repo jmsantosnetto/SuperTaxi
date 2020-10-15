@@ -49,14 +49,33 @@ class AddressViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        let message = "Data: \(self.addresses[indexPath.row].date ?? "") \n Endereço: \(self.addresses[indexPath.row].address ?? "")"
+        
+        let alert = UIAlertController (
+            title: "Histórico de viagem",
+            message: message ,
+            preferredStyle: .alert
+        )
+               
+        let action = UIAlertAction(title: "Ok", style: .default, handler: nil)
+
+        alert.addAction(action)
+
+        self.present(alert, animated: true, completion: nil)
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let deleteAction = UIContextualAction(style: .destructive, title: "Remover") {  (contextualAction, view, boolValue) in
             AddressService.instance.removeAddress(index: indexPath.row)
             self.getAddresses()
         }
+        
+        let swipeActions = UISwipeActionsConfiguration(actions: [deleteAction])
+
+        return swipeActions
     }
-    
     
 }
